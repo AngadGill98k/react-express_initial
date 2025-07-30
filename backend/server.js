@@ -39,7 +39,11 @@ app.use(session({
   }
 }));
 const csrfProtection = csurf({
-  cookie: false
+  cookie: {
+    httpOnly: false, // ✅ allow JS access
+    secure: false,   // 🔒 set to true in production with HTTPS
+    sameSite: 'Lax',
+  }
 });
 // Passport setup
 app.use(passport.initialize());
@@ -90,7 +94,13 @@ function ensureAuth(req, res, next) {
 
 
 app.get('/get_csrf', (req, res) => {
-  res.json({ csrfToken: req.csrfToken() });
+  const token = req.csrfToken();
+  res.cookie('XSRF-TOKEN', token, {
+    httpOnly: false, // ✅ So frontend JS can read it
+    secure: false,   // 🔒 true in prod with HTTPS
+    sameSite: 'Lax',
+  });
+  res.json({ csrfToken: token }); // Optional, you can skip this if you only want the cookie
 });
 app.post('/signup', async (req, res) => {
   const { name, pass,mail } = req.body;

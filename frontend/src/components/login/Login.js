@@ -10,7 +10,9 @@ const Login = () => {
     password: ''
   });
   const [errorMsg, setErrorMsg] = useState('');
-  const [csrfToken,setc]=useState('')
+ 
+ 
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setErrorMsg('');
@@ -24,14 +26,21 @@ const Login = () => {
         .then(data => {
           if (data.csrfToken) {
            console.log('CSRF Token:', data.csrfToken);
-           setc(data.csrfToken)
            console.log('getting and set the token')
-            // document.cookie = `XSRF-TOKEN=${data.csrfToken}; path=/;`;
+           document.cookie = `XSRF-TOKEN=${data.csrfToken}; path=/;`;
+          
           }
         })
   }, [])
-  
+ function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
+
   const handleSubmit = () => {
+    
     const url = isSignup ? 'http://localhost:3001/signup' : 'http://localhost:3001/signin';
     const { username, mail, password } = form;
 
@@ -48,7 +57,7 @@ const Login = () => {
    
     fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json','X-CSRF-Token': csrfToken },
+      headers: { 'Content-Type': 'application/json','X-CSRF-Token': getCookie('XSRF-TOKEN') },
       credentials: 'include',
       body: JSON.stringify({ name:username, mail, pass:password })
 
