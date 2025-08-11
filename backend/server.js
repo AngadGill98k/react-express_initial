@@ -4,6 +4,30 @@ const app=express();
 const PORT=3001
 
 
+const http=require("http")
+const server=http.createServer(app)
+const {Server}=require("socket.io")
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+
+io.on('connection',(socket)=>{
+  console.log("user connected");
+  console.log(socket.id);
+
+
+  
+  socket.on('disconnect',()=>{
+    console.log("user disconnected");
+  })
+})
+
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname,"public")));
 
@@ -146,6 +170,6 @@ app.post('/logout', (req, res) => {
 
 
 
-app.listen(3001,()=>{
+server.listen(3001,()=>{
     console.log("server started");
 })
