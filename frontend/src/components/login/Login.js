@@ -68,8 +68,8 @@ const Login = () => {
       .then(data => {
        
         if (data.message === 'Login successful') {
-          console.log("asdasdsadasdasd");
-           console.log(data.msg);
+          
+           
           navigate('/home');  
         } 
         if(data.message==="Signup successful"){

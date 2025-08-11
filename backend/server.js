@@ -61,9 +61,8 @@ passport.serializeUser((user,done)=>{
     done(null,user._id);
 })
 passport.deserializeUser(async (id,done)=>{
-    await User.findById(id,(err,user)=>{
-        done(err,user);
-    })
+    let user=await User.findById(id)        
+    done(null,user);  
 })
 passport.use(new LocalStrategy({
     usernameField:"mail",
