@@ -11,7 +11,7 @@ function App() {
   useEffect(() => {
     socketref.current=io("http://localhost:3001")
     socketref.current.on('connect', () => {
-      dispatch(setsocket(socketref.current.id)); 
+      dispatch(setsocket({id:socketref.current.id})); 
       console.log('Connected with ID:', socket);
     }); 
     return () => {
